@@ -5,11 +5,11 @@ public:
     long long findScore(vector<int>& nums) {
         long long ans = 0;
         int n = nums.size();
-        unordered_map<int,bool> mp;
+        vector<int> marked(n);
         priority_queue<pii, vector<pii>, greater<pii > > pq;
 
         for(int i = 0;i<n;i++){
-            pq.push({nums[i],i});
+            pq.emplace(nums[i],i);
         }
 
         while(!pq.empty()){
@@ -18,11 +18,11 @@ public:
 
             int index = top.second;
 
-            if(mp[index]) continue;
+            if(marked[index]) continue;
 
-            if(index>0) mp[index-1] = true;
+            if(index>0) marked[index-1] = true;
 
-            if(index<n-1) mp[index+1] = true;
+            if(index<n-1) marked[index+1] = true;
 
             ans+=top.first;
         }
