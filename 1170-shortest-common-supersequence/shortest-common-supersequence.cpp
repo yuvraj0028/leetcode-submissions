@@ -23,6 +23,7 @@ public:
 
         int i = 0, j = 0;
 
+        // processing the DP Table
         while(i<n && j<m){
             if(str1[i] == str2[j]){
                 commonSeq+=str1[i];
@@ -36,6 +37,7 @@ public:
             }
         }
 
+        // if any part of string is left make sure to include it :)
         while(i<n) commonSeq+=str1[i++];
         while(j<m) commonSeq+=str2[j++];
 
