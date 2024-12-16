@@ -26,15 +26,15 @@ private:
             for(int j = m-1; j>=0; j--){
                 long long ans = 0;
                 if(s[i] == t[j]){
-                    ans = (dp[i+1][j+1]%MOD + dp[i+1][j])%MOD;
+                    ans = (dp[i+1][j+1] % MOD + dp[i+1][j] % MOD) % MOD;
                 } else {
-                    ans = dp[i+1][j]%MOD;
+                    ans = dp[i+1][j] % MOD;
                 }
-                dp[i][j] = ans%MOD;
+                dp[i][j] = ans % MOD;
             }
         }
 
-        return dp[0][0]%MOD;
+        return dp[0][0] % MOD;
     }
     
 public:
