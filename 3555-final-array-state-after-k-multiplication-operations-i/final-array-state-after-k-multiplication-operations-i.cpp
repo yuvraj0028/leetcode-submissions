@@ -14,12 +14,8 @@ public:
         while(k--){
             PAIR top = pq.top(); pq.pop();
             top.first*=multiplier;
+            nums[top.second] = top.first; 
             pq.push(top);
-        }
-
-        while(!pq.empty()){
-            PAIR top = pq.top(); pq.pop();
-            nums[top.second] = top.first;
         }
 
         return nums;
