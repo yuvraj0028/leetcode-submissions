@@ -80,9 +80,39 @@ private:
         return next[1][k];
     }
 
+    int findProfitConstantSpace(int k, vector<int>& prices){
+        int n = prices.size();
+
+        vector<int> curr(2*k+1);
+        vector<int> next(2*k+1);
+
+        for(int i = n-1; i>=0; i--){
+            for(int buy = 0; buy< 2*k; buy++){
+                int profit = 0;
+
+                if(buy%2==0){
+                    int buyStock = -prices[i] + next[buy+1];
+                    int ignore = next[buy];
+                    profit = max(buyStock, ignore);
+                } else {
+                    int sellStock = prices[i] + next[buy+1];
+                    int ignore = next[buy];
+                    profit = max(sellStock, ignore);
+                }
+
+                curr[buy] = profit;
+            }
+
+            next = curr;
+        }
+
+        return next[0];
+    }
+
+
 public:
     int maxProfit(int k, vector<int>& prices) {
         // memset(dp, 0, sizeof(dp));
-        return findProfitOptimized(k, prices);
+        return findProfitConstantSpace(k, prices);
     }
 };
