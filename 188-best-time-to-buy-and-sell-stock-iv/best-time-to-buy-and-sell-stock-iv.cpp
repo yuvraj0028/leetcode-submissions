@@ -49,9 +49,40 @@ private:
         return dp[0][1][k];
     }
 
+    int findProfitOptimized(int k, vector<int>& prices){
+        int n = prices.size();
+
+        vector<vector<int > > curr(n+1, vector<int>(k+1));
+        vector<vector<int > > next(n+1, vector<int>(k+1));
+
+        for(int i = n-1; i>=0; i--){
+            for(int buy = 0; buy< 2; buy++){
+                for(int limit = 1 ; limit <= k; limit++){
+                    int profit = 0;
+
+                    if(buy){
+                        int buyStock = -prices[i] + next[0][limit];
+                        int ignore = next[1][limit];
+                        profit = max(buyStock, ignore);
+                    } else {
+                        int sellStock = prices[i] + next[1][limit-1];
+                        int ignore = next[0][limit];
+                        profit = max(sellStock, ignore);
+                    }
+
+                    curr[buy][limit] = profit;
+                }
+            }
+
+            next = curr;
+        }
+
+        return next[1][k];
+    }
+
 public:
     int maxProfit(int k, vector<int>& prices) {
-        memset(dp, 0, sizeof(dp));
-        return findProfitTabulation(k, prices);
+        // memset(dp, 0, sizeof(dp));
+        return findProfitOptimized(k, prices);
     }
 };
