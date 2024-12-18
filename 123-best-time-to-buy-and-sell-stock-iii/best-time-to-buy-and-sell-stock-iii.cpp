@@ -22,9 +22,35 @@ private:
 
         return dp[i][buy][limit] = profit;
     }
+
+    int solveTab(vector<int>& prices){
+        int n = prices.size();
+
+        for(int i = n-1; i>=0 ;i--){
+            for(int buy = 0; buy<2; buy++){
+                for(int limit = 1; limit<3; limit++){
+                    int profit = 0;
+
+                    if(buy){
+                        int buy_stock = -prices[i] + dp[i+1][0][limit];
+                        int ignore = dp[i+1][1][limit];
+                        profit = max(buy_stock, ignore);
+                    } else {
+                        int sell_stock = prices[i] + dp[i+1][1][limit-1];
+                        int ignore = dp[i+1][0][limit];
+                        profit = max(sell_stock, ignore);
+                    }
+
+                    dp[i][buy][limit] = profit;
+                }
+            }
+        }
+
+        return dp[0][1][2];
+    }
 public:
     int maxProfit(vector<int>& prices) {
-        memset(dp, -1, sizeof(dp));
-        return solve(0, 1, 2, prices);
+        // memset(dp, -1, sizeof(dp));
+        return solveTab(prices);
     }
 };
