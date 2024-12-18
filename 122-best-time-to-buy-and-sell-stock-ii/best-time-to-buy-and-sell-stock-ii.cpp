@@ -19,10 +19,35 @@ private:
 
         return dp[i][buy] = profit;
     }
+
+    int findProfitTabulation(vector<int> &prices){
+        int n = prices.size();
+        vector<vector<int > > dp(n+1, vector<int>(2));
+
+        for(int i = n-1; i>=0; i--){
+            for(int j = 1;j >= 0; j--){
+                int profit = 0;
+
+                if(j){
+                    int buy_stock = -prices[i] + dp[i+1][0];
+                    int ignore = dp[i+1][1];
+                    profit = max(buy_stock, ignore);
+                } else {
+                    int sell_stock = prices[i] + dp[i+1][1];
+                    int ignore = dp[i+1][0];
+                    profit = max(sell_stock, ignore);
+                }
+
+                dp[i][j] = profit;
+            }
+        }
+
+        return dp[0][1];
+    }
 public:
     int maxProfit(vector<int>& prices) {
-        int n = prices.size();
-        vector<vector<int > > dp(n+1, vector<int>(2,-1));
-        return findProfit(0,1,prices,dp);
+        // int n = prices.size();
+        // vector<vector<int > > dp(n+1, vector<int>(2,-1));
+        return findProfitTabulation(prices);
     }
 };
