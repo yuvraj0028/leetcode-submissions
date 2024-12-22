@@ -45,11 +45,38 @@ private:
         return dp[0][1];
     }
 
+    int findProfitOptimized(vector<int>& prices, int fee){
+        int n = prices.size();
+        vector<int> curr(2), next(2);
+
+        for(int i = n-1; i>=0; i--){
+            for(int buy = 0; buy < 2; buy++){
+                int profit = 0;
+                if(buy){
+                    int buyStock = -prices[i] + next[0];
+                    int ignore = next[1];
+                    profit = max(buyStock, ignore);
+                } else {
+                    int sellStock = prices[i] + next[1] - fee;
+                    int ignore = next[0];
+                    profit = max(sellStock, ignore);
+                }
+
+                curr[buy] = profit;
+            }
+
+            next = curr;
+        }
+
+        return next[1];
+    }
+
 public:
     int maxProfit(vector<int>& prices, int fee) {
         // int n = prices.size();
         // vector<vector<int > > dp(n, vector<int>(2,-1));
         // return findProfit(0, 1, prices, fee, dp);
-        return findProfitTabulation(prices, fee);
+        // return findProfitTabulation(prices, fee);
+        return findProfitOptimized(prices, fee);
     }
 };
