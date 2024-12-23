@@ -23,15 +23,49 @@ private:
         // exclude current element
         findSubset(i+1, nums, temp, ans, dp);
     }
-public:
-    vector<int> largestDivisibleSubset(vector<int>& nums) {
+
+    vector<int> findSubsetTabulation(vector<int>& nums){
         int n = nums.size();
-        vector<int> ans, temp, dp(n,-1);
+        int maxi = 1, lastIndex = 0;
+        vector<int> dp(n,1), hash(n), ans;
 
         sort(nums.begin(), nums.end());
 
-        findSubset(0,nums,temp,ans,dp);
+        for(int i = 1; i<n; i++){
+            hash[i] = i;
+            for(int prev = 0; prev<i;prev++){
+                if(nums[i] % nums[prev] == 0 && dp[i] < dp[prev] + 1){
+                    dp[i] = dp[prev] + 1;
+                    hash[i] = prev;
+                }
+            }
+
+            if(dp[i] > maxi){
+                maxi = dp[i];
+                lastIndex = i;
+            }
+        }
+
+        ans.push_back(nums[lastIndex]);
+
+        while(hash[lastIndex] != lastIndex){
+            lastIndex = hash[lastIndex];
+            ans.push_back(nums[lastIndex]);
+        }
+
+        reverse(ans.begin(), ans.end());
 
         return ans;
+    }
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        // int n = nums.size();
+        // vector<int> ans, temp, dp(n,-1);
+
+        // sort(nums.begin(), nums.end());
+
+        // findSubset(0,nums,temp,ans,dp);
+
+        return findSubsetTabulation(nums);
     }
 };
