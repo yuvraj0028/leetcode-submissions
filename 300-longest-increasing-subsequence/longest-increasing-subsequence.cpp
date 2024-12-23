@@ -79,10 +79,30 @@ private:
         return maxi;
     }
 
+    int findLisTimeOptimized(vector<int> &nums){
+        vector<int> temp;
+        int len = 1;
+        int n = nums.size();
+
+        temp.push_back(nums[0]);
+
+        for(int i = 1; i<n; i++){
+            if(nums[i] > temp.back()){
+                temp.push_back(nums[i]);
+                len++;
+            } else {
+                auto it = lower_bound(temp.begin(), temp.end(), nums[i]);
+                *it = nums[i];
+            }
+        }
+
+        return len;
+    }
+
 public:
     int lengthOfLIS(vector<int>& nums) {
         // int n = nums.size();
         // vector<vector<int > > dp(n+1, vector<int>(n+2,-1));
-        return findLisNSpace(nums);
+        return findLisTimeOptimized(nums);
     }
 };
