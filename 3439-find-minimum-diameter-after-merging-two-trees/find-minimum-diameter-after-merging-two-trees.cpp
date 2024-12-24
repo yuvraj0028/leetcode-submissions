@@ -1,18 +1,18 @@
 class Solution {
 private:
-    int findHops(unordered_map<int, vector<int > > &adj, int n){
-        int last = 0, hops = 0;
-
+    pair<int, int> bfs(unordered_map<int, vector<int > > &adj, int start){
         queue<int> q;
-        q.push(last);
+        q.push(start);
 
-        vector<bool> vis(n,false);
-        vis[last] = true;
+        int last = start, hops = 0;
         
+        vector<bool> vis(adj.size(), false);
+        vis[last] = true;
+
         while(!q.empty()){
             int size = q.size();
 
-            for(int i = 0;i<size; i++){
+            for(int i = 0; i<size; i++){
                 last = q.front();
                 q.pop();
 
@@ -23,32 +23,11 @@ private:
                     }
                 }
             }
-        }
-
-        q.push(last);
-
-        for(int i = 0;i<n;i++){
-            vis[i] = false;
-        }
-
-        while(!q.empty()){
-            int size = q.size();
-
-            for(int i = 0;i<size; i++){
-                int parent = q.front();
-                q.pop();
-
-                for(const int &node : adj[parent]){
-                    if(!vis[node]){
-                        q.push(node);
-                        vis[node] = true;
-                    }
-                }
-            }
             hops++;
         }
 
-        return hops-1;
+        return {last, hops-1};
+
     }
 
     int findDiameter(vector<vector<int>>& edges){
@@ -70,7 +49,10 @@ private:
             edge.insert(v);
         }
 
-        return findHops(adj, edge.size());
+        auto [node,_] = bfs(adj, 0);
+        auto [_,diameter] = bfs(adj, node);
+
+        return diameter;
     }
 public:
     int minimumDiameterAfterMerge(vector<vector<int>>& edges1, vector<vector<int>>& edges2) {
