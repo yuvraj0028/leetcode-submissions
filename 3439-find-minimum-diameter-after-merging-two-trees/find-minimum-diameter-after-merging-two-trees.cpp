@@ -36,7 +36,6 @@ private:
         if(n==0) return 0;
 
         unordered_map<int, vector<int > > adj;
-        unordered_set<int> edge;
 
         for(int i = 0; i<n; i++){
             int u = edges[i][0];
@@ -44,9 +43,6 @@ private:
 
             adj[u].push_back(v);
             adj[v].push_back(u);
-
-            edge.insert(u);
-            edge.insert(v);
         }
 
         auto [node,_] = bfs(adj, 0);
