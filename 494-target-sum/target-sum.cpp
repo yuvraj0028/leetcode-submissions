@@ -1,18 +1,28 @@
 class Solution {
 private:
-    int findWays(int i, vector<int>& nums, int target){
+    string getKey(int a, int b){
+        return to_string(a) + ", " + to_string(b);
+    }
+
+    int findWays(int i, vector<int>& nums, int target, unordered_map<string, int>& dp){
         if(i>=nums.size())
             return target == 0;
 
-        int add = findWays(i+1, nums, target + nums[i]);
+        string key = getKey(i, target);
 
-        int sub = findWays(i+1, nums, target - nums[i]);
+        if(dp.count(key))
+            return dp[key];
 
-        return add + sub;
+        int add = findWays(i+1, nums, target + nums[i], dp);
+
+        int sub = findWays(i+1, nums, target - nums[i], dp);
+
+        return dp[key] = add + sub;
     }
 
 public:
     int findTargetSumWays(vector<int>& nums, int target) {
-        return findWays(0, nums, target);
+        unordered_map<string, int> dp;
+        return findWays(0, nums, target, dp);
     }
 };
