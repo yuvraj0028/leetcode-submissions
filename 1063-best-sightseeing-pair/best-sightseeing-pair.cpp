@@ -4,7 +4,6 @@ public:
         int n = values.size();
 
         int score = INT_MIN;
-
         int maxi = values[0];
 
         for(int i = 1; i<n; i++){
@@ -12,7 +11,6 @@ public:
             int tempScore = maxi + curr;
 
             score = max(score, tempScore);
-
             maxi = max(maxi, values[i]+i);
         }
 
