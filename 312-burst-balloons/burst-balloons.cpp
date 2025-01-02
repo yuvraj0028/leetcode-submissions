@@ -17,15 +17,44 @@ private:
 
         return dp[i][j] = maxi;
     }
-public:
-    int maxCoins(vector<int>& nums) {
+
+    int findMaxCoinsTabulation(vector<int>& nums){
         int n = nums.size();
 
-        vector<vector<int > > dp(n+3, vector<int>(n+3,-1));
+        vector<vector<int > > dp(n+3, vector<int>(n+3, 0));
 
         nums.insert(nums.begin(), 1);
         nums.push_back(1);
 
-        return findMaxCoins(nums, 1, n, dp);
+        for(int i = n; i>=1; i--){
+            for(int j = 1; j<=n; j++){
+                if(i>j) continue;
+
+                int maxi = INT_MIN;
+
+                for(int index = i; index<=j; index++){
+                    int cost = nums[i-1] * nums[index] * nums[j+1];
+                    int left = dp[i][index-1];
+                    int right = dp[index+1][j];
+
+                    maxi = max(maxi, cost+left+right);
+                }
+
+                dp[i][j] = maxi;
+            }
+        }
+
+        return dp[1][n];
+    }
+public:
+    int maxCoins(vector<int>& nums) {
+        // int n = nums.size();
+
+        // vector<vector<int > > dp(n+3, vector<int>(n+3,-1));
+
+        // nums.insert(nums.begin(), 1);
+        // nums.push_back(1);
+
+        return findMaxCoinsTabulation(nums);
     }
 };
