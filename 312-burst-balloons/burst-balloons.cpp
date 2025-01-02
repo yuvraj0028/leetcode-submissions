@@ -1,3 +1,12 @@
+#pragma GCC optimize("Ofast,unroll-loops")
+#pragma GCC target("avx2,tune=native")
+
+static int x = []() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    return 0;
+}();
+
 class Solution {
 private:
     int findMaxCoins(vector<int>& nums, int i, int j, vector<vector<int > > &dp){
