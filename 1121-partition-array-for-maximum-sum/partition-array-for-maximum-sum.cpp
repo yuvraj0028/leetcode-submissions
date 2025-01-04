@@ -21,11 +21,34 @@ private:
         return dp[i] = maxAns;
     }
 
+    int findMaxPartTab(vector<int>& arr, int k){
+        int n = arr.size();
+        vector<int> dp(n+1, -1);
+
+        for(int i = n-1; i>=0; i--){
+            int maxAns = INT_MIN;
+            int maxi = INT_MIN;
+            int len = 0;
+
+            for(int j = i; j < i+k && j < n; j++){
+                len++;
+                maxi = max(maxi, arr[j]);
+
+                int sum = (len * maxi) + dp[j+1];
+
+                maxAns = max(sum, maxAns);
+            }
+
+            dp[i] = maxAns;
+        }
+
+        return dp[0] + 1;
+    }
 
 public:
     int maxSumAfterPartitioning(vector<int>& arr, int k) {
-        int n = arr.size();
-        vector<int> dp(n+1, -1);
-        return findMaximumPartition(arr, k, 0, dp);
+        // int n = arr.size();
+        // vector<int> dp(n+1, -1);
+        return findMaxPartTab(arr, k);
     }
 };
