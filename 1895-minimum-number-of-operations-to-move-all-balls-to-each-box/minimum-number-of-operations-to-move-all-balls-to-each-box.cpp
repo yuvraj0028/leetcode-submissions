@@ -2,18 +2,34 @@ class Solution {
 public:
     vector<int> minOperations(string boxes) {
         int n = boxes.size();
-        vector<int> ans(n);
+        vector<int> result(n);
 
-        for(int i = 0; i<n; i++){
-            int temp = 0;
-            for(int j = 0; j<n; j++){
-                if(boxes[j] == '1'){
-                    temp+=abs(j - i);
-                }
+        int rightOnes = 0;
+        int leftOnes = 0;
+        int sum = 0;
+        int prefixSum = 0;
+
+        for(int i =0; i<n; i++){
+            if(boxes[i] == '1'){
+                rightOnes++;
+                sum+=i;
             }
-            ans[i] = temp;
         }
 
-        return ans;
+        for(int i = 0; i<n; i++){
+            int moves = sum + prefixSum;
+
+            result[i] = moves;
+
+            if(boxes[i] == '1'){
+                rightOnes--;
+                leftOnes++;
+            }
+
+            prefixSum += leftOnes;
+            sum -= rightOnes;
+        }
+
+        return result;
     }
 };
