@@ -6,13 +6,13 @@ public:
 
         if(n != m) return false;
         
-        unordered_map<char, int> mp;
+        vector<int> freq(256);
 
-        for(const char &ch : s) mp[ch]++;
+        for(const char &ch : s) freq[ch]++;
 
         for(const char &ch : t){
-            if(mp[ch] > 0){
-                mp[ch]--;
+            if(freq[ch] > 0){
+                freq[ch]--;
             } else {
                 return false;
             }
