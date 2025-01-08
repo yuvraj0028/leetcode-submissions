@@ -13,6 +13,8 @@ public:
                 string word = words[j];
                 int wordSize = word.size();
 
+                if(patternSize > wordSize) continue;
+
                 if(word.find(pattern) == 0 && (word.rfind(pattern) == wordSize - patternSize)){
                     ans++;
                 }
