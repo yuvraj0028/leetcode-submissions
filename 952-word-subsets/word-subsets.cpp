@@ -1,39 +1,45 @@
 class Solution {
+private:
+    bool isSubset(vector<int> &freq, vector<int> &temp){
+        for(int i = 0; i<26; i++){
+            if(temp[i] < freq[i]){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 public:
-    vector<string> wordSubsets(vector<string>& mainWords, vector<string>& requiredWords) {
-        int maxCharFreq[26] = {0};
-        int tempCharFreq[26];
-        
-        for (const auto& word : requiredWords) {
-            memset(tempCharFreq, 0, sizeof tempCharFreq);//To Set Temp freq all to zero 
-//You can do vector<int> tempCharFreq(26,0);
-            for (char ch : word) {
-                tempCharFreq[ch - 'a']++;
-            }
-            for (int i = 0; i < 26; ++i) {
-                maxCharFreq[i] = max(maxCharFreq[i], tempCharFreq[i]);
-            }
-        }
-        
-        vector<string> universalWords;
-        
-        for (const auto& word : mainWords) {
-            memset(tempCharFreq, 0, sizeof tempCharFreq);
-            for (char ch : word) {
-                tempCharFreq[ch - 'a']++;
-            }
-            bool isUniversal = true;
-            for (int i = 0; i < 26; ++i) {
-                if (maxCharFreq[i] > tempCharFreq[i]) {
-                    isUniversal = false;
-                    break;
-                }
-            }
-            if (isUniversal) {
-                universalWords.emplace_back(word);
+    vector<string> wordSubsets(vector<string>& words1, vector<string>& words2) {
+        vector<int> freq2(26);
+        vector<string> ans;
+
+        for(const string &str : words2){
+
+            int temp[26] = {0};
+
+            for(const char &ch : str){
+                int index = ch-'a';
+                temp[index]++;
+                freq2[index] = max(temp[index], freq2[index]);
             }
         }
-        
-        return universalWords;
+
+        for(const string &str : words1){
+            
+            vector<int> temp(26);
+
+            for(const char &ch : str){
+                temp[ch-'a']++;
+            }
+
+            if(isSubset(freq2, temp)){
+                ans.push_back(str);
+            }
+        }
+
+        return ans;
+
     }
 };
