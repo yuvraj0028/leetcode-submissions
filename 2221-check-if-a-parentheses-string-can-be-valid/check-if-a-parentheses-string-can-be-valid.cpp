@@ -1,37 +1,40 @@
 class Solution {
 public:
     bool canBeValid(string s, string locked) {
-        int n = s.length();
-        if (n % 2 != 0) {
-            return false; // Odd length cannot form valid parentheses
-        }
+        stack<int> open, openClose;
 
-        // Left-to-right pass: Ensure there are enough open brackets
-        int openCount = 0;
-        for (int i = 0; i < n; i++) {
-            if (s[i] == '(' || locked[i] == '0') {
-                openCount++;
-            } else { // s[i] == ')' and locked[i] == '1'
-                openCount--;
-            }
-            if (openCount < 0) {
-                return false; // Too many ')' encountered
-            }
-        }
+        int n = s.size();
 
-        // Right-to-left pass: Ensure there are enough close brackets
-        int closeCount = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            if (s[i] == ')' || locked[i] == '0') {
-                closeCount++;
-            } else { // s[i] == '(' and locked[i] == '1'
-                closeCount--;
-            }
-            if (closeCount < 0) {
-                return false; // Too many '(' encountered
+        if(n%2 != 0) return false;
+
+        for(int i = 0;i<n;i++){
+            char lock = locked[i];
+            char para = s[i];
+
+            if(lock == '0'){
+                openClose.push(i);
+            } else if(para == '('){
+                open.push(i);
+            } else {
+                if(!open.empty()){
+                    open.pop();
+                } else if(!openClose.empty()){
+                    openClose.pop();
+                } else {
+                    return false;
+                }
             }
         }
 
-        return true;
+        while(!open.empty() && !openClose.empty()){
+            if(open.top() > openClose.top()){
+                return false;
+            }
+
+            open.pop();
+            openClose.pop();
+        }
+
+        return open.empty();
     }
 };
