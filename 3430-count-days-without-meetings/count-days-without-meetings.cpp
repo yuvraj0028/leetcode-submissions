@@ -4,11 +4,6 @@ public:
         sort(meetings.begin(), meetings.end());
 
         int n = meetings.size();
-
-        // for(const auto & i : meetings){
-        //     cout<<i[0]<<" "<<i[1]<<endl;
-        // }
-
         int ans = 0;
        
         int first = meetings[0][0];
