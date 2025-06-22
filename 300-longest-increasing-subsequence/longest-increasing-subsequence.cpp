@@ -1,108 +1,23 @@
 class Solution {
 private:
-    int findLIS(int i, vector<int>& nums, vector<vector<int > > &dp, int prev = -1){
-        if(i>=nums.size()) return 0;
+    int solve(vector<int>& nums, int i, vector<vector<int > > &dp, int prev = -1){
+        if(i>=nums.size()){
+            return 0;
+        }
 
         if(dp[i][prev+1] != -1) return dp[i][prev+1];
-
-        int include = 0;
-
+        
+        int inc = 0;
         if(prev == -1 || nums[prev] < nums[i]){
-            include = 1 + findLIS(i+1, nums, dp, i);
+            inc = 1 + solve(nums, i+1, dp, i);
         }
 
-        int exclude = findLIS(i+1, nums, dp, prev);
-    
-        return dp[i][prev+1] = max(include, exclude);
+        int exc = solve(nums, i+1, dp, prev);
+        return dp[i][prev+1] = max(inc, exc);
     }
-
-    int findLisTabulation(vector<int>& nums){
-        int n = nums.size();
-        vector<vector<int > > dp(n+1, vector<int>(n+1));
-        
-        for(int i = n-1; i>=0; i--){
-            for(int prev = i-1; prev>=-1; prev--){
-                int include = 0;
-
-                if(prev == -1 || nums[prev] < nums[i]){
-                    include = 1 + dp[i+1][i+1];
-                }
-
-                int exclude = dp[i+1][prev + 1];
-            
-                dp[i][prev+1] = max(include, exclude);
-            }
-        }
-
-        return dp[0][0];
-
-    }
-
-    int findLisOptimized(vector<int>& nums){
-        int n = nums.size();
-        vector<int> curr(n+1), next(n+1);
-        
-        for(int i = n-1; i>=0; i--){
-            for(int prev = i-1; prev>=-1; prev--){
-                int include = 0;
-
-                if(prev == -1 || nums[prev] < nums[i]){
-                    include = 1 + next[i+1];
-                }
-
-                int exclude = next[prev + 1];
-            
-                curr[prev+1] = max(include, exclude);
-            }
-
-            next = curr;
-        }
-
-        return next[0];
-    }
-
-    int findLisNSpace(vector<int>& nums){
-        int n = nums.size();
-        int maxi = 1;
-
-        vector<int> dp(n,1);
-
-        for(int i = 0;i<n;i++){
-            for(int prev = 0; prev<i;prev++){
-                if(nums[i] > nums[prev])
-                    dp[i] = max(1+dp[prev], dp[i]);
-            }
-
-            maxi = max(maxi, dp[i]);
-        }
-
-        return maxi;
-    }
-
-    int findLisTimeOptimized(vector<int> &nums){
-        vector<int> temp;
-        int len = 1;
-        int n = nums.size();
-
-        temp.push_back(nums[0]);
-
-        for(int i = 1; i<n; i++){
-            if(nums[i] > temp.back()){
-                temp.push_back(nums[i]);
-                len++;
-            } else {
-                auto it = lower_bound(temp.begin(), temp.end(), nums[i]);
-                *it = nums[i];
-            }
-        }
-
-        return len;
-    }
-
 public:
     int lengthOfLIS(vector<int>& nums) {
-        // int n = nums.size();
-        // vector<vector<int > > dp(n+1, vector<int>(n+2,-1));
-        return findLisTimeOptimized(nums);
+        vector<vector<int > > dp(nums.size()+1, vector<int>(nums.size()+2,-1));
+        return solve(nums, 0, dp);
     }
 };
