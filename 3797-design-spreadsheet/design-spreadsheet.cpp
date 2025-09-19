@@ -12,6 +12,11 @@ private:
         }
     }
 
+    bool checkOperandIsCell(string &operand){
+        char ch = operand[0];
+        return colMapping.find(ch) != colMapping.end();
+    }
+
     pair<int,int> getRowColValueFromCell(string &cell){
         string rowString = cell.substr(1);
         char colLabel = cell[0];
@@ -23,11 +28,6 @@ private:
 
         pair<int,int> rowColPair = make_pair(row, col);
         return rowColPair;
-    }
-
-    bool checkOperandIsCell(string &operand){
-        char ch = operand[0];
-        return colMapping.find(ch) != colMapping.end();
     }
 
     pair<int,int> parseFormulaString(string &formula){
