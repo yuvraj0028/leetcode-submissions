@@ -3,18 +3,18 @@ private:
     int dp[10001];
     int solve(vector<int>& values, vector<int> &points, int i){
         if(i>=values.size()) return 0;
-        if(i == values.size() - 1) return points[i];
-
         if(dp[i] != -1) return dp[i];
 
-        if(values[i+1] == values[i] + 1){
-            int take = points[i] + solve(values, points, i+2);
-            int notTake = solve(values, points, i+1);
-            
-            return dp[i] = max(take, notTake);
-        } else {
-            return dp[i] = points[i] + solve(values, points, i+1);
+        int notTake = solve(values, points, i+1);
+        
+        int nextIdx = i+1;
+        if(nextIdx<values.size() && values[nextIdx] <= values[i] + 1){
+            nextIdx++;
         }
+
+        int take = points[i] + solve(values, points, nextIdx);
+
+        return dp[i] = max(take, notTake);
     }
 public:
     int deleteAndEarn(vector<int>& nums) {
