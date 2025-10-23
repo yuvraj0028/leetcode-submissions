@@ -12,8 +12,6 @@ private:
             newString += char((int(s[i] - '0') + int(s[i+1] - '0'))%10) + '0';
         }
 
-        cout<<newString<<endl;
-
         return solve(newString);
     }
 public:
