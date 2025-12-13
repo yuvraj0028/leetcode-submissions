@@ -1,38 +1,40 @@
 class Solution {
 public:
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        if (nums1.size() > nums2.size()) {
+        if(nums1.size() > nums2.size()){
             return findMedianSortedArrays(nums2, nums1);
         }
 
-        int m = nums1.size();
-        int n = nums2.size();
-
         int s = 0;
-        int e = m;
+        int e = nums1.size();
 
-        while (s <= e) {
-            int partitionA = s + (e - s) / 2;
-            int partitionB = (m + n + 1) / 2 - partitionA;
+        int n = nums1.size();
+        int m = nums2.size();
 
-            int maxLeftA = (partitionA == 0) ? INT_MIN : nums1[partitionA - 1];
-            int minRightA = (partitionA == m) ? INT_MAX : nums1[partitionA];
+        while(s<=e){
+            int mid1 = s + (e-s)/2;
+            int mid2 = (n+m+1)/2 - mid1;
 
-            int maxLeftB = (partitionB == 0) ? INT_MIN : nums2[partitionB - 1];
-            int minRightB = (partitionB == n) ? INT_MAX : nums2[partitionB];
 
-            if (maxLeftA <= minRightB && maxLeftB <= minRightA) {
-                if ((m + n) % 2 == 0) {
-                    return (max(maxLeftA, maxLeftB) + min(minRightA, minRightB)) / 2.0;
-                } else {
-                    return max(maxLeftA, maxLeftB);
+            int l1 = mid1 == 0 ? INT_MIN : nums1[mid1-1];
+            int r1 = mid1 == n ? INT_MAX : nums1[mid1];
+
+            int l2 = mid2 == 0 ? INT_MIN : nums2[mid2-1];
+            int r2 = mid2 == m ? INT_MAX : nums2[mid2];
+
+            if(l1<=r2 && l2<=r1){
+                if((m+n) % 2 == 0){
+                    return (max(l1,l2) + min(r1,r2))/2.0;
                 }
-            } else if (maxLeftA > minRightB) {
-                e = partitionA - 1;
+
+                return max(l1,l2);
+            } else if (l1>r2){
+                e=mid1-1;
             } else {
-                s = partitionA + 1;
+                s=mid1+1;
             }
         }
+
         return 0;
     }
 };
