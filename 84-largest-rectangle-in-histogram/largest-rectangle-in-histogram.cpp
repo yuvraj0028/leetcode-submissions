@@ -1,51 +1,59 @@
 class Solution {
 private:
-    vector<int> prevSmallerElement(vector<int>& heights){
-        int n = heights.size();
-        vector<int> result(n);
+    vector<int> nextSmallerElement(vector<int>& arr){
+        int n = arr.size();
         stack<int> st;
         st.push(-1);
+        vector<int> ans(n);
+
+        for(int i = n-1;i>=0;i--){
+            while(st.top() != -1 && arr[i] <= arr[st.top()]){
+                st.pop();
+            }
+
+            ans[i] = st.top();
+            st.push(i);
+        }
+
+        return ans;
+    }
+
+    vector<int> prevSmallerElement(vector<int>& arr){
+        int n = arr.size();
+        stack<int> st;
+        st.push(-1);
+        vector<int> ans(n);
 
         for(int i = 0; i<n; i++){
-            while(st.top()!=-1 && heights[i] <= heights[st.top()]){
+            while(st.top() != -1 && arr[i] <= arr[st.top()]){
                 st.pop();
             }
-            result[i] = st.top();
+
+            ans[i] = st.top();
             st.push(i);
         }
-        return result;
+
+        return ans;
     }
 
-    vector<int> nextSmallerElement(vector<int>& heights){
-        int n = heights.size();
-        vector<int> result(n);
-        stack<int> st;
-        st.push(-1);
-
-        for(int i = n-1; i>=0; i--){
-            while(st.top()!=-1 && heights[i] <= heights[st.top()]){
-                st.pop();
-            }
-            result[i] = st.top();
-            st.push(i);
-        }
-        return result;
-    }
 public:
     int largestRectangleArea(vector<int>& heights) {
-        int n = heights.size();
-        int ans = INT_MIN;
+        int n = heights.size(); 
         vector<int> prev = prevSmallerElement(heights);
         vector<int> next = nextSmallerElement(heights);
 
+        int area = 0;
         for(int i = 0;i<n;i++){
             if(next[i] == -1){
                 next[i] = n;
             }
-            int b = next[i] - prev[i] -1;
+
+            int b = next[i] - prev[i] - 1;
             int l = heights[i];
-            ans = max(ans, l*b);
+
+            area = max(area, l*b);
         }
-        return ans;
+
+        return area;
     }
 };
