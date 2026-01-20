@@ -6,14 +6,21 @@ public:
         
         for(int i = 0; i<n; i++){
             int num = nums[i];
-            for(int j = 1; j<num; j++){
-                int res = j | (j+1);
 
-                if(res == num){
-                    ans[i] = j;
-                    break;
-                }
+            if(num%2 == 0) {
+                continue;
             }
+
+            int temp = num;
+            int cnt = 0;
+
+            while(temp&1){
+                temp>>=1;
+                cnt++;
+            }
+
+            ans[i] = num ^ (1<<(cnt-1));
+            
         }
 
         return ans;
