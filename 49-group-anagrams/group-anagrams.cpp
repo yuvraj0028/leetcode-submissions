@@ -1,25 +1,33 @@
 class Solution {
+private:
+    string getHashedKey(string s){
+        vector<int> freq(26);
+        string key = "";
+        for(const char &ch : s){
+            freq[ch-'a']++;
+        }
+
+        for(int i = 0;i<26;i++){
+            key+=to_string(freq[i])+"#";
+        }
+
+        return key;
+    }
+
 public:
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
-        unordered_map<string, vector<string > > mp;
+        unordered_map<string,vector<string > > mp;
+        vector<vector<string>> ans;
 
-        for(string str : strs){
-            int freq[26] = {0};
-            for(char ch : str) freq[ch-'a']++;
-
-            string key = "";
-            for(int i : freq){
-                key+=((char)(i+'a') + '#');
-            }
-
-            mp[key].push_back(str);
+        for(const string &s : strs){
+            string key = getHashedKey(s);
+            mp[key].push_back(s);
         }
 
-        vector<vector<string > > res;
-        for(const auto [k,v] : mp){
-            res.push_back(v);
+        for(const auto itr : mp){
+            ans.push_back(itr.second);
         }
 
-        return res;
+        return ans;
     }
 };
