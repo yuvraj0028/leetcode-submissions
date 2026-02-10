@@ -15,21 +15,6 @@ public:
                     odd.insert(nums[j]);
                 }
 
-                // cout<<"even"<<endl;
-                // for(const auto &s : even){
-                //     cout<<s<<" ";
-                // }
-
-                // cout<<endl;
-
-                // cout<<"odd"<<endl;
-
-                // for(const auto &s : odd){
-                //     cout<<s<<" ";
-                // }
-
-                // cout<<endl;
-
                 if(even.size() == odd.size()){
                     ans = max(ans, j-i+1);
                 }
