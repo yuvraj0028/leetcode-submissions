@@ -4,18 +4,16 @@ public:
         int n = s.size();
         int m = t.size();
 
-        if(n != m) return false;
+        if(n!=m) return false;
         
         vector<int> freq(256);
+        for(int i = 0; i<n; i++){
+            freq[s[i]]++;
+            freq[t[i]]--;
+        }
 
-        for(const char &ch : s) freq[ch]++;
-
-        for(const char &ch : t){
-            if(freq[ch] > 0){
-                freq[ch]--;
-            } else {
-                return false;
-            }
+        for(const auto &i : freq){
+            if(i!=0) return false;
         }
 
         return true;
