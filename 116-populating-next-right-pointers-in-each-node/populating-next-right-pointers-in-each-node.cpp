@@ -31,23 +31,23 @@ private:
         solve(root->right);
     }
 
-    void printTree(Node* root){
-        if(!root) return;
+    // void printTree(Node* root){
+    //     if(!root) return;
 
-        if(root->next){
-            cout<<root->next->val<<endl;
-        } else {
-            cout<<"NULL"<<endl;
-        }
+    //     if(root->next){
+    //         cout<<root->next->val<<endl;
+    //     } else {
+    //         cout<<"NULL"<<endl;
+    //     }
 
-        printTree(root->left);
-        printTree(root->right);
-    }
+    //     printTree(root->left);
+    //     printTree(root->right);
+    // }
 
 public:
     Node* connect(Node* root) {
         solve(root);
-        printTree(root);
+        // printTree(root);
         return root;
     }
 };
