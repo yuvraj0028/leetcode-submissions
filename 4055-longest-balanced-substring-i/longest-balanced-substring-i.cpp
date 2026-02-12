@@ -1,38 +1,35 @@
 class Solution {
 public:
     int longestBalanced(string s) {
+        int n = s.size();
         int ans = 0;
-        for(int i = 0; i<s.size(); i++){
-            vector<int> freq(26);
-            unordered_set<char> st;
 
-            for(int j = i; j<s.size(); j++){
-                freq[s[j] - 'a']++;
-                st.insert(s[j]);
-                
-                char startChar = *st.begin();
-                int startCharFreq = freq[startChar-'a'];
-                int tempAns = ans;
-                bool changed = true;
-                for(const char &ch : st){
-                    if(startCharFreq == freq[ch-'a']){
+        for(int i=0; i<n; i++){
+            vector<int> freq(26,0);
+            char stChar = s[i];
+
+            for(int j = i; j<n; j++){
+                freq[s[j]-'a']++;
+                int stFreq = freq[stChar-'a'];
+
+                bool flag = true;
+                int temp = ans;
+                for(int k = 0; k<26; k++){
+                    if(stFreq == freq[k] && freq[k] != 0){
                         ans = max(ans, j-i+1);
+                    } else if(freq[k] == 0){
+                        continue;
                     } else {
-                        changed = false;
+                        flag = false;
                         break;
                     }
-
-                    // cout<<ch << " -> freq -> "<< freq[ch-'a']<<" | ";
                 }
 
-                if(!changed){
-                    ans = tempAns;
+                if(!flag){
+                    ans = temp;
                 }
-                // cout<<endl;
-
             }
         }
-
         return ans;
     }
 };
