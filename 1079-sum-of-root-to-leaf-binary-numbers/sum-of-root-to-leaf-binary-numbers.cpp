@@ -22,7 +22,7 @@ public:
             string temp = str;
             if(str.size()>=1) str.pop_back();
 
-            return temp.empty() ? 0 : stoi(temp,nullptr, 2);
+            return temp.empty() ? 0 : stoi(temp, nullptr, 2);
         }
 
         int left = sumRootToLeaf(root->left);
