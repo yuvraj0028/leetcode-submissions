@@ -1,6 +1,6 @@
-class Comparator {
+class Comparator{
 public:
-    bool operator()(pair<int,int> a, pair<int,int> b){
+    bool operator()(pair<int,int > &a, pair<int,int > &b){
         return a.second > b.second;
     }
 };
@@ -8,24 +8,27 @@ public:
 class Solution {
 public:
     vector<int> topKFrequent(vector<int>& nums, int k) {
+        priority_queue<pair<int,int>, vector<pair<int,int > >, Comparator > pq;
         unordered_map<int,int> mp;
-        vector<int> vec;
-        priority_queue<pair<int,int >, vector<pair<int,int > >, Comparator> pq;
-    
-        for(const int &i : nums) mp[i]++;
 
-        for(auto i : mp){
-            pq.push(i);
-            if(pq.size() > k){
+        for(const int &i : nums){
+            mp[i]++;
+        }
+
+        for(const auto [key,val] : mp){
+            pq.push({key,val});
+
+            if(pq.size()>k){
                 pq.pop();
             }
         }
 
+        vector<int> ans;
         while(!pq.empty()){
-            vec.push_back(pq.top().first);
+            ans.push_back(pq.top().first);
             pq.pop();
         }
 
-        return vec;
+        return ans;
     }
 };
