@@ -11,7 +11,7 @@
  */
 class Solution {
 private:
-    void solve(TreeNode* &root){
+    void solve(TreeNode* root) {
         if(!root) return;
 
         solve(root->left);
@@ -24,6 +24,7 @@ private:
 
 public:
     TreeNode* invertTree(TreeNode* root) {
+        if(!root) return nullptr;
         solve(root);
         return root;
     }
