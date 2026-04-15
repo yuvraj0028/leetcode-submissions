@@ -9,33 +9,27 @@ public:
 
         if(words[startIndex] == target) return 0;
 
-        while(left != startIndex) {
+        while(left != startIndex && right != startIndex) {
             if(words[left] == target) {
                 foundLeft = true;
                 break;
             }
 
-            leftCnt++;
-            left = (left + n - 1)%n;
-        }
-
-        while(right != startIndex) {
             if(words[right] == target) {
                 foundRight = true;
                 break;
             }
 
-            rightCnt++;
+            left = (left + n - 1)%n;
             right = (right + 1)%n;
+
+            leftCnt++;
+            rightCnt++;
         }
 
-        if(foundLeft) {
-            ans = min(ans, leftCnt);
-        }
+        if(foundLeft) ans = min(ans, leftCnt);
 
-        if(foundRight) {
-            ans = min(ans, rightCnt);
-        }
+        if(foundRight) ans = min(ans, rightCnt);
 
         return ans == INT_MAX ? -1 : ans;
     }
