@@ -10,21 +10,24 @@
  * };
  */
 class Solution {
-private:
-    bool solve(TreeNode* root, long long mini, long long maxi){
-        if(!root) return 1;
+public:
+    void inorder(TreeNode* root, vector<int> &vec) {
+        if(!root) return;
 
-        if(root->val > mini && root->val < maxi){
-            bool left = solve(root->left, mini, root->val);
-            bool right = solve(root->right, root->val, maxi);
-            return left && right;
-        } else {
-            return 0;
-        }
+        inorder(root->left, vec);
+        vec.push_back(root->val);
+        inorder(root->right, vec);
+
     }
 
-public:
     bool isValidBST(TreeNode* root) {
-        return solve(root, LONG_MIN, LONG_MAX);
+        vector<int> vec;
+        inorder(root, vec);
+
+        for(int i = 1; i<vec.size(); i++) {
+            if(vec[i-1] >= vec[i]) return false;
+        }
+
+        return true;
     }
 };
