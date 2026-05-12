@@ -4,9 +4,7 @@ private:
     unordered_map<int, int> indexes;
 
 public:
-    RandomizedSet() {
-        
-    }
+    RandomizedSet() {}
     
     bool insert(int val) {
         if(indexes.find(val) != indexes.end()) return false;
