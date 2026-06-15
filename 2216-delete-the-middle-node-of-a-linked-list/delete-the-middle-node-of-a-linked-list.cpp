@@ -31,8 +31,6 @@ public:
 
         ListNode* node = getNodeBeforeMiddle(head);
         node->next = node->next->next;
-
-        // cout<<node->val<<endl;
         return head;
     }
 };
