@@ -1,34 +1,37 @@
 class Solution {
 private:
     vector<vector<string>> ans;
+    bool isPalindrome(string str, int i, int j) {
 
-    bool isPalindrome(string &s, int start, int end) {
-        while(start <= end) {
-            if(s[start++] != s[end--])
+        while(i<=j){
+            if(str[i++] != str[j--]) {
                 return false;
+            }
         }
+
         return true;
     }
 
-    void solve(string &str, int index, vector<string> &palindromes) {
-        if(index == str.size()) {
-            ans.push_back(palindromes);
+    void solve(vector<string> &vec, string &str, int i) {
+        if(i==str.size()) {
+            ans.push_back(vec);
             return;
         }
 
-        for(int end = index; end < str.size(); end++) {
-            if(isPalindrome(str, index, end)) {
-                palindromes.push_back(str.substr(index, end - index + 1));
-                solve(str, end + 1, palindromes);
-                palindromes.pop_back();
+        for(int j = i; j<str.size(); j++) {
+            if(isPalindrome(str, i, j)) {
+                vec.push_back(str.substr(i, j-i+1));
+                solve(vec, str, j+1);
+                vec.pop_back();
             }
         }
     }
 
 public:
     vector<vector<string>> partition(string s) {
-        vector<string> palindromes;
-        solve(s, 0, palindromes);
+        vector<string> vec;
+        solve(vec, s, 0);
+
         return ans;
     }
 };
