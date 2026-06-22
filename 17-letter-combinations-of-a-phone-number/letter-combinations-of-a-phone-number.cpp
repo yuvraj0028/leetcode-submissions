@@ -1,29 +1,38 @@
 class Solution {
 private:
-    vector<string> combn;
-    void solve(string &digits, string output, int i, string map[]) {
-        if(i>=digits.size()) {
-            combn.push_back(output);
+    vector<string> combinations;
+    void solve(string &digits, int i, string* map, string &str) {
+        if(i == digits.size()) {
+            combinations.push_back(str);
             return;
         }
 
         int index = digits[i] - '0';
-        string value = map[index];
+        string pattern = map[index];
 
-        for(int in = 0; in<value.size(); in++) {
-            output.push_back(value[in]);
-            solve(digits, output, i+1, map);
-            output.pop_back();
+        for(int idx = 0; idx < pattern.size(); idx++) {
+            str.push_back(pattern[idx]);
+            solve(digits, i+1, map, str);
+            str.pop_back();
         }
     }
+
 public:
     vector<string> letterCombinations(string digits) {
-        if(digits.size() == 0) return combn;
-
-        string mapping[10] = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-
-        solve(digits, "", 0, mapping);
-
-        return combn;
+        string map[10] = {
+            "",
+            "",
+            "abc",
+            "def",
+            "ghi",
+            "jkl",
+            "mno",
+            "pqrs",
+            "tuv",
+            "wxyz"
+        };
+        string str = "";
+        solve(digits, 0, map, str);
+        return combinations;
     }
 };
