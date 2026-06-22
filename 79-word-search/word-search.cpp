@@ -1,38 +1,43 @@
 class Solution {
 private:
-    bool solve(vector<vector<char>>& board, string word, int i, int j, int k){
-        if(k>=word.size()) return 1;
+    vector<vector<bool > > visited;
+    bool solve(vector<vector<char>>& board, string word, int i, int j, int index) {
+        if(index == word.size()) return true;
 
-        if(i<0 || i>= board.size() || j<0 || j>=board[0].size() || board[i][j] != word[k] || board[i][j] == '.'){
-            return false;
+        if(
+            i<0 || j<0 ||
+            i >= board.size() ||
+            j >= board[0].size() ||
+            visited[i][j] ||
+            board[i][j] != word[index]
+        ) return false;
+
+        visited[i][j] = 1;
+
+        int delRow[4] = {1, 0, -1, 0};
+        int delCol[4] = {0, 1, 0, -1};
+
+        for(int idx = 0; idx < 4; idx++) {
+            if(solve(board, word, delRow[idx] + i, delCol[idx] + j, index+1)){
+                return true;
+            }
         }
-
-        if(word.size() == 1 && board[i][j] == word[k]) return 1;
-
-        int delX[] = {1,0,-1,0};
-        int delY[] = {0,-1,0,1};
-
-        char ch = board[i][j];
-        board[i][j] = '.';
-        bool temp = 0;
-
-        for(int dir= 0; dir<4; dir++){
-            temp = temp || solve(board, word, i + delX[dir],j + delY[dir], k+1);
-        }
-        board[i][j] = ch;
-        return temp;
+        visited[i][j] = 0;
+        return false;
     }
 
 public:
     bool exist(vector<vector<char>>& board, string word) {
-        int n = board.size();
-        for(int i = 0; i<n; i++){
-            for(int j = 0; j<board[i].size(); j++){
-                if(solve(board,word,i,j,0)){
-                    return 1;
+
+        for(int i = 0; i<board.size(); i++) {
+            for(int j = 0; j<board[0].size(); j++) {
+                visited.assign(board.size(), vector<bool>(board[0].size(), 0));
+                if(solve(board, word, i, j, 0)) {
+                    return true;
                 }
             }
         }
-        return 0;
+
+        return false;
     }
 };
