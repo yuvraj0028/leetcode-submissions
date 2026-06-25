@@ -15,7 +15,6 @@ public:
 
         for(const auto &point: points) {
             double dist = sqrt(pow(point[0], 2) + pow(point[1], 2));
-            // cout <<dist<<endl;
             pdv pair_ = {dist, point};
             pq.push(pair_);
 
