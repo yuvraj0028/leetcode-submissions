@@ -1,110 +1,80 @@
-class TweetMeta{
-public:
-    int userId;
-    int tweetId;
-    int time;
-};
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+#include <queue>
+#include <tuple>
+#include <algorithm>
 
-class Comparator {
-public:
-    bool operator()(const TweetMeta &a, const TweetMeta &b) {
-        return a.time < b.time;
-    }
-};
+using namespace std;
 
 class Twitter {
 private:
     int time;
-    unordered_map<int, priority_queue<TweetMeta, vector<TweetMeta>, Comparator> >userToTweetMeta;
-    unordered_map<int, vector<TweetMeta > > userToTweet;
-    unordered_map<int, set<int > > followers;
+    // Maps a user to a list of their own tweets stored chronologically: {time, tweetId}
+    unordered_map<int, vector<pair<int, int>>> userTweets;
+    // Maps a user to the set of people they follow
+    unordered_map<int, unordered_set<int>> following;
 
-    void populateFeed(int userId, int tweetId) {
-        set<int> followedUsers = followers[userId];
-        TweetMeta tm;
-        tm.userId = userId;
-        tm.tweetId = tweetId;
-        tm.time = time;
-
-        for(const auto user: followedUsers) {
-            userToTweetMeta[user].push(tm);
-        }
+public:
+    Twitter() {
+        time = 0;
     }
-
-    vector<int> parseFeed(int userId) {
+    
+    // O(1) time - Extremely fast write operation
+    void postTweet(int userId, int tweetId) {
+        userTweets[userId].push_back({++time, tweetId});
+    }
+    
+    // O(F + 10 log F) time, where F is the number of followees
+    vector<int> getNewsFeed(int userId) {
         vector<int> feed;
-        auto tweetMeta = userToTweetMeta[userId];
+        // Priority Queue stores: tuple<time, tweetId, userId, vector_index>
+        priority_queue<tuple<int, int, int, int>> maxHeap;
 
-        int cnt = 0;
-        while(!tweetMeta.empty() && cnt < 10) {
-            auto tm = tweetMeta.top();
-            feed.push_back(tm.tweetId);
-            tweetMeta.pop();
-            cnt++;
+        // 1. Include the user's own latest tweet if it exists
+        if (userTweets.count(userId) && !userTweets[userId].empty()) {
+            int idx = userTweets[userId].size() - 1;
+            maxHeap.push({userTweets[userId][idx].first, userTweets[userId][idx].second, userId, idx});
+        }
+
+        // 2. Include the latest tweet from every followee
+        if (following.count(userId)) {
+            for (int followeeId : following[userId]) {
+                if (userTweets.count(followeeId) && !userTweets[followeeId].empty()) {
+                    int idx = userTweets[followeeId].size() - 1;
+                    maxHeap.push({userTweets[followeeId][idx].first, userTweets[followeeId][idx].second, followeeId, idx});
+                }
+            }
+        }
+
+        // 3. Extract the top 10 overall most recent tweets
+        while (!maxHeap.empty() && feed.size() < 10) {
+            auto [t, tweetId, authorId, idx] = maxHeap.top();
+            maxHeap.pop();
+            
+            feed.push_back(tweetId);
+
+            // If this author has older tweets left, push the next one down into the heap
+            if (idx > 0) {
+                int nextIdx = idx - 1;
+                maxHeap.push({userTweets[authorId][nextIdx].first, userTweets[authorId][nextIdx].second, authorId, nextIdx});
+            }
         }
 
         return feed;
     }
-
-public:
-    Twitter() {
-        this->time = 0;
-    }
     
-    void postTweet(int userId, int tweetId) {
-        time++;
-        TweetMeta tm;
-        tm.userId = userId;
-        tm.tweetId = tweetId;
-        tm.time = time;
-
-        userToTweetMeta[userId].push(tm);
-        userToTweet[userId].push_back(tm);
-        populateFeed(userId, tweetId);
-    }
-    
-    vector<int> getNewsFeed(int userId) {
-        return parseFeed(userId);
-    }
-    
+    // O(1) time - Just adding an ID to a hash set
     void follow(int followerId, int followeeId) {
-        // 1 follows 2
-        if(followerId == followeeId) return;
-        if(followers[followeeId].count(followerId)) return;
-        
-        followers[followeeId].insert(followerId);
-        vector<TweetMeta> tweets = userToTweet[followeeId];
-        for(const TweetMeta &tweet: tweets) {
-            userToTweetMeta[followerId].push(tweet);
+        if (followerId != followeeId) {
+            following[followerId].insert(followeeId);
         }
     }
     
+    // O(1) time - Just removing an ID from a hash set
     void unfollow(int followerId, int followeeId) {
-        // 1 unfollows 2
-        if(followerId == followeeId) return;
-        if(!followers[followeeId].count(followerId)) return;
-
-        followers[followeeId].erase(followerId);
-        auto oldMeta = userToTweetMeta[followerId];
-        priority_queue<TweetMeta, vector<TweetMeta>, Comparator> newMeta;
-
-        while(!oldMeta.empty()) {
-            auto meta = oldMeta.top();
-            if(meta.userId != followeeId) {
-                newMeta.push(meta);
-            }
-            oldMeta.pop();
+        if (following.count(followerId)) {
+            following[followerId].erase(followeeId);
         }
-
-        userToTweetMeta[followerId] = newMeta;
     }
 };
-
-/**
- * Your Twitter object will be instantiated and called as such:
- * Twitter* obj = new Twitter();
- * obj->postTweet(userId,tweetId);
- * vector<int> param_2 = obj->getNewsFeed(userId);
- * obj->follow(followerId,followeeId);
- * obj->unfollow(followerId,followeeId);
- */
