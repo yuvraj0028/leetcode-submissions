@@ -1,45 +1,43 @@
 class Solution {
 private:
     bool dfs(
-        unordered_map<int, vector<int > > &adjList,
-        unordered_map<int, bool> &visited,
-        unordered_map<int, bool> &dfsVisited,
-        int node
+        int course,
+        unordered_map<int, vector<int>>& adjList,
+        unordered_map<int,int>& visited,
+        unordered_map<int,int>& dfsVisited
     ) {
-
-        visited[node] = 1;
-        dfsVisited[node] = 1;
-
-        for(const auto &i: adjList[node]){
-            if(!visited[i]){
-                if(dfs(adjList, visited, dfsVisited, i)){
+        visited[course] = 1;
+        dfsVisited[course] = 1;
+        for(const int &nextCourse : adjList[course]) {
+            if(dfsVisited[nextCourse]) {
+                return true;
+            }
+            
+            if(!visited[nextCourse]) {
+                if(dfs(nextCourse, adjList, visited, dfsVisited)) {
                     return true;
                 }
             }
-            if(dfsVisited[i]){
-                return true;
-            }
         }
 
-        dfsVisited[node] = 0;
-        return false;
+        dfsVisited[course] = 0;
+        return false; 
     }
-
 public:
-    bool canFinish(int numCourses, vector<vector<int>>& preq) {
-        int n = preq.size();
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
         unordered_map<int, vector<int > > adjList;
-        unordered_map<int, bool> visited, dfsVisited;
-        for(int i = 0; i<n; i++){
-            int u = preq[i][0];
-            int v = preq[i][1];
+        unordered_map<int, int> visited, dfsVisited;
+
+        for(int i=0; i<prerequisites.size(); i++) {
+            int u = prerequisites[i][0];
+            int v = prerequisites[i][1];
 
             adjList[u].push_back(v);
         }
 
-        for(int i = 0; i<numCourses; i++){
+        for(int i = 0; i<numCourses;i++) {
             if(!visited[i]){
-                if(dfs(adjList, visited, dfsVisited, i)){
+                if(dfs(i, adjList, visited, dfsVisited)) {
                     return false;
                 }
             }
