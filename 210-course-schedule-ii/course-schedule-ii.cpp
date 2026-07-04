@@ -11,12 +11,7 @@ public:
             int v = courses[1];
 
             adjList[v].push_back(u);
-        }
-
-        for(int i=0; i<numCourses; i++) {
-            for(const int &course : adjList[i]) {
-                inDegree[course]++;
-            }
+            inDegree[u]++;
         }
 
         for(int i = 0; i<numCourses; i++) {
