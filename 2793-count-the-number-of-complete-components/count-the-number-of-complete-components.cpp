@@ -31,11 +31,6 @@ public:
                 int nodes = 0;
                 dfs(adjList, visited, i, nodes, edges);
 
-                cout<<" node -> "<<i<<endl;
-
-                cout<<"total node -> "<<nodes<<endl;
-                cout<<"total edges -> "<<edges<<endl;
-
                 if(edges == (nodes*(nodes-1))) {
                     cnt++;
                 }
