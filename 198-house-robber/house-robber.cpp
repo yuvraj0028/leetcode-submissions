@@ -36,6 +36,24 @@ public:
         // return robHelperRec(nums, dp, 0);
 
         // Tabulation -> S.C -> O(N), T.C -> O(N)
-        return robHelperTab(nums);
+        // return robHelperTab(nums);
+
+        // Optimized Tabulation
+        int n = nums.size();
+        
+        if (n==0) return 0;
+        if (n==1) return nums[0];
+
+        int currHouse = 0; // maximum loot
+        int prevHouse2 = 0; // loot from 2nd last house
+        int prevHouse1 = nums[0]; // loot from last house
+
+        for(int i = 2; i<=n; i++) {
+            currHouse = max(prevHouse1, prevHouse2 + nums[i-1]);
+            prevHouse2 = prevHouse1;
+            prevHouse1 = currHouse;
+        }
+
+        return currHouse;
     }
 };
