@@ -41,7 +41,23 @@ public:
         // return initialStep;
 
         // Tabular -> T.C - O(N), S.C - O(N)
-        return getMinCostTab(cost);
+        // return getMinCostTab(cost);
+
+        // Bottom Up Space Optimized -> T.C - O(N), S.C - O(1)
+
+        int n = cost.size();
+
+        int prev1 = 0;
+        int prev2 = 0;
+        int curr = 0;
+
+        for(int i = 2; i<=n; i++) {
+            curr = min(prev1 + cost[i-1], prev2 + cost[i-2]);
+            prev2 = prev1;
+            prev1 = curr;
+        }
+
+        return prev1;
 
     }
 };
