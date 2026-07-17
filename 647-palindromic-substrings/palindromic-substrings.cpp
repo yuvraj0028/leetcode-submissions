@@ -10,25 +10,51 @@ private:
         return dp[i][j] = false;
     }
 
-    // bool checkPalindromeTab(string &s) {
-
-    // }
-
-public:
-    int countSubstrings(string s) {
+    int checkPalindromeTab(string &s) {
         int n = s.size();
-        int result = 0;
+        int result = n;
 
-        vector<vector<int > > dp(n+1, vector<int>(n+1, -1));
+        if(n==0 || n==1) return n;
 
-        for(int i  = 0; i<n; i++) {
-            for(int j = i; j<n; j++) {
-                if(checkPalindromeRec(s, i, j, dp)) {
+        vector<vector<bool > > dp(n+1, vector<bool>(n+1,false));
+        for(int i =0; i<n; i++) dp[i][i] = true;
+
+        for(int len = 2; len<=n; len++) {
+            for(int i = 0; i+len-1<n; i++) {
+                int j = i + len - 1;
+                if(s[i] == s[j]) {
+                    dp[i][j] = len == 2 ? true : dp[i+1][j-1];
+                } else {
+                    dp[i][j] = false;
+                }
+
+                if(dp[i][j]) {
                     result++;
                 }
             }
         }
 
         return result;
+    }
+
+public:
+    int countSubstrings(string s) {
+        // int n = s.size();
+        // int result = 0;
+
+        // vector<vector<int > > dp(n+1, vector<int>(n+1, -1));
+
+        // for(int i  = 0; i<n; i++) {
+        //     for(int j = i; j<n; j++) {
+        //         if(checkPalindromeRec(s, i, j, dp)) {
+        //             result++;
+        //         }
+        //     }
+        // }
+
+        // return result;
+
+
+        return checkPalindromeTab(s);
     }
 };
