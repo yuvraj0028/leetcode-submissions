@@ -13,9 +13,10 @@ private:
     }
 public:
     string longestPalindrome(string s) {
-        int n = s.size();
         int maxLen = 0;
-        string result = "";
+        int startingIndex = 0;
+
+        int n = s.size();
         vector<vector<int > > dp(n+1, vector<int>(n+1, -1));
 
         for(int i = 0; i<n; i++) {
@@ -24,12 +25,12 @@ public:
                 if(checkPalindromeRec(s, i, j, dp)) {
                     if(currLen > maxLen) {
                         maxLen = currLen;
-                        result = s.substr(i, j-i+1);
+                        startingIndex = i;
                     }
                 }
             }
         }
 
-        return result;
+        return s.substr(startingIndex, maxLen);
     }
 };
