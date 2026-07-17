@@ -1,6 +1,6 @@
 class Solution {
 private:
-    int checkPalindromeRec(string s, int i, int j, vector<vector<int > > &dp) {
+    bool checkPalindromeRec(string &s, int i, int j, vector<vector<int > > &dp) {
         if(i>=j) return true;
 
         if(dp[i][j] != -1) return dp[i][j];
@@ -9,6 +9,10 @@ private:
 
         return dp[i][j] = false;
     }
+
+    // bool checkPalindromeTab(string &s) {
+
+    // }
 
 public:
     int countSubstrings(string s) {
