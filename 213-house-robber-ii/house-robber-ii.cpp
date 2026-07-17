@@ -30,6 +30,27 @@ private:
 
         return dp[length-1];
     }
+
+    int robHelperTabOptimized(vector<int> &nums, int start, int end) {
+        int length = end - start + 1;
+        if(length<=0) return 0;
+        if(length == 1) return nums[start];
+    
+        int prev2 = nums[start];
+        int prev1 = max(nums[start], nums[start+1]);
+
+        for(int i = 2; i<length; i++) {
+            int notTake = prev1;
+            int take = prev2 + nums[start + i];
+        
+            int curr = max(take, notTake);
+
+            prev2 = prev1;
+            prev1 = curr;
+        }
+
+        return prev1;
+    }
     
 public:
     int rob(vector<int>& nums) {
@@ -48,8 +69,15 @@ public:
 
 
         // Tabulation T.C -> O(N), S.C -> O(N)
-        int robFirst = robHelperTab(nums, 0, n-2);
-        int robSecond = robHelperTab(nums, 1, n-1);
+        // int robFirst = robHelperTab(nums, 0, n-2);
+        // int robSecond = robHelperTab(nums, 1, n-1);
+    
+        // return max(robFirst, robSecond);
+
+
+        // Tabulation Optimized T.C -> O(N), S.C -> O(1)
+        int robFirst = robHelperTabOptimized(nums, 0, n-2);
+        int robSecond = robHelperTabOptimized(nums, 1, n-1);
     
         return max(robFirst, robSecond);
     }
