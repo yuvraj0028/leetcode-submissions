@@ -1,25 +1,30 @@
 class Solution {
+private:
+    int checkPalindromeRec(string s, int i, int j, vector<vector<int > > &dp) {
+        if(i>=j) return true;
+
+        if(dp[i][j] != -1) return dp[i][j];
+
+        if(s[i] == s[j]) return dp[i][j] = checkPalindromeRec(s, i+1, j-1, dp);
+
+        return dp[i][j] = false;
+    }
+
 public:
     int countSubstrings(string s) {
-        int n = s.size(), cnt = 0;
-        vector<vector<int > > dp(n, vector<int>(n,0));
+        int n = s.size();
+        int result = 0;
 
-        for(int i=0; i<n; i++){
-            for(int j=0, k=i; k<n; j++, k++){
-                if(i == 0){
-                    dp[j][k] = 1;
-                } else if(i == 1 && s[j] == s[k]){
-                    dp[j][k] = 1;
-                } else if(s[j] == s[k] && dp[j+1][k-1]) {
-                    dp[j][k] = 1;
-                }
+        vector<vector<int > > dp(n+1, vector<int>(n+1, -1));
 
-                if(dp[j][k]){
-                    cnt++;
+        for(int i  = 0; i<n; i++) {
+            for(int j = i; j<n; j++) {
+                if(checkPalindromeRec(s, i, j, dp)) {
+                    result++;
                 }
             }
         }
 
-        return cnt;
+        return result;
     }
 };
