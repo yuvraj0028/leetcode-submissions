@@ -40,6 +40,32 @@ private:
         return s.substr(startingIndex, maxLen);
     }
 
+    string getPalindromeTabConstant(string &s) {
+        if(s.empty()) return "";
+        int maxLen = 1, startingIndex = 0;
+
+        auto expand = [&](int l, int r) {
+            while(l>=0 && r<(int)s.size() && s[l] == s[r]) {
+                l--;
+                r++;
+            }
+
+            int len = r-l-1;
+
+            if(len > maxLen) {
+                startingIndex = l+1;
+                maxLen = len;
+            }
+        };
+
+        for(int i = 0; i<(int)s.size(); i++) {
+            expand(i,i);
+            expand(i,i+1);
+        }
+
+        return s.substr(startingIndex, maxLen);
+    }
+
 public:
     string longestPalindrome(string s) {
         // int maxLen = 0;
@@ -62,6 +88,8 @@ public:
 
         // return s.substr(startingIndex, maxLen);
     
-        return getPalindromeTab(s);
+        // return getPalindromeTab(s);
+
+        return getPalindromeTabConstant(s);
     }
 };
