@@ -37,6 +37,27 @@ private:
         return result;
     }
 
+    int checkPalindromeConstant(string &s) {
+        int n = s.size();
+        int result = 0;
+
+        if(n==0 || n==1) return n;
+
+        auto expand = [&](int l, int r) {
+            while(l>=0 && r<n && s[l] == s[r]) {
+                l--; r++;
+                result++;
+            }
+        };
+
+        for(int i = 0; i<n; i++) {
+            expand(i,i);
+            expand(i,i+1);
+        }
+
+        return result;
+    }
+
 public:
     int countSubstrings(string s) {
         // int n = s.size();
@@ -55,6 +76,8 @@ public:
         // return result;
 
 
-        return checkPalindromeTab(s);
+        // return checkPalindromeTab(s);
+
+        return checkPalindromeConstant(s);
     }
 };
