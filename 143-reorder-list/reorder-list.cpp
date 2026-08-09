@@ -44,19 +44,28 @@ private:
     void reorderHelper(ListNode* head) {
         if(!head) return;
 
+        // Dive to the tail
         reorderHelper(head->next);
-        ListNode* temp = curr->next;
         
+        // As we unwind, if the list is already terminated, freeze and do nothing
         if(!curr->next) {
             return;
         }
-        else if(head == curr) {
+        
+        // Odd-length stopping point: pointers meet at the exact same node
+        if(head == curr) {
             head->next = nullptr;
             return;
         }
 
+        // Rewire the pointers
+        ListNode* temp = curr->next;
         curr->next = head;
+        
+        // Even-length stopping point: head == temp means they just crossed
         head->next = (head == temp) ? nullptr : temp;
+        
+        // Advance forward pointer
         curr = temp;
     }
 
