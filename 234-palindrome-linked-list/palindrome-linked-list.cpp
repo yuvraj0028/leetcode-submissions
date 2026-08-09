@@ -35,21 +35,52 @@ private:
         return slow;
     }
 
-public:
-    bool isPalindrome(ListNode* head) {
-        ListNode* curr = head;
-        ListNode* middle = getMiddle(curr);
-        ListNode* rev = reverseList(middle);
+    bool checkPalindromeStack(ListNode* head) {
+        if(!head || !head->next) return head;
 
-        while(head && rev) {
-            if(head->val != rev->val) {
+        stack<ListNode*> st;
+        ListNode* curr = head;
+        
+        while(curr){
+            st.push(curr);
+            curr = curr->next;
+        }
+
+        int k = st.size() / 2;
+
+        while(k--) {
+            ListNode* top = st.top();
+            st.pop();
+
+            if(head->val != top->val) {
                 return false;
             }
 
             head = head->next;
-            rev = rev->next;
         }
 
         return true;
+    }
+
+public:
+    bool isPalindrome(ListNode* head) {
+        if(!head || !head->next) return true;
+
+        // ListNode* curr = head;
+        // ListNode* middle = getMiddle(curr);
+        // ListNode* rev = reverseList(middle);
+
+        // while(head && rev) {
+        //     if(head->val != rev->val) {
+        //         return false;
+        //     }
+
+        //     head = head->next;
+        //     rev = rev->next;
+        // }
+
+        // return true;
+
+        return checkPalindromeStack(head);
     }
 };
