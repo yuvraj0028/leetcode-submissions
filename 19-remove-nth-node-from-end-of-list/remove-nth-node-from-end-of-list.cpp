@@ -9,22 +9,28 @@
  * };
  */
 class Solution {
+private:
+    int cnt;
+    ListNode* removeHelper(ListNode* head, int n) {
+        if(!head) return nullptr;
+
+        head->next = removeHelper(head->next, n);
+        cnt++;
+
+        if(cnt == n) {
+            return head->next;
+        }
+        return head;
+    }
+
 public:
     ListNode* removeNthFromEnd(ListNode* head, int n) {
-        ListNode* res = new ListNode(0, head);
-        ListNode* dummy = res;
+        if(!head || !head->next) return nullptr;
 
-        for(int i = 0; i<n; i++){
-            head = head->next;
-        }
-
-        while(head){
-            head = head->next;
-            dummy = dummy->next;
-        }
-
-        dummy->next = dummy->next->next;
-
-        return res->next;
+        cnt = 0;
+        ListNode* curr = head;
+        head = removeHelper(curr, n);
+        
+        return head;
     }
 };
