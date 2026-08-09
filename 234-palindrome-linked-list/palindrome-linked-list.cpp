@@ -83,26 +83,26 @@ public:
     bool isPalindrome(ListNode* head) {
         if(!head || !head->next) return true;
 
-        ListNode* curr = head;
-        ListNode* middle = getMiddle(curr);
-        ListNode* rev = reverseList(middle);
+        // ListNode* curr = head;
+        // ListNode* middle = getMiddle(curr);
+        // ListNode* rev = reverseList(middle);
 
-        while(head && rev) {
-            if(head->val != rev->val) {
-                return false;
-            }
+        // while(head && rev) {
+        //     if(head->val != rev->val) {
+        //         return false;
+        //     }
 
-            head = head->next;
-            rev = rev->next;
-        }
+        //     head = head->next;
+        //     rev = rev->next;
+        // }
 
-        return true;
+        // return true;
 
         // return checkPalindromeStack(head);
 
-        // recCurr = head;
-        // checkPalindromeRecursion(head);
+        recCurr = head;
+        checkPalindromeRecursion(head);
         
-        // return isListPalindrome;
+        return isListPalindrome;
     }
 };
