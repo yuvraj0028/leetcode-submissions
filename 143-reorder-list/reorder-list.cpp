@@ -40,25 +40,48 @@ private:
         return slow;
     }
 
+    ListNode* curr;
+    void reorderHelper(ListNode* head) {
+        if(!head) return;
+
+        reorderHelper(head->next);
+        ListNode* temp = curr->next;
+        
+        if(!curr->next) {
+            return;
+        }
+        else if(head == curr) {
+            head->next = nullptr;
+            return;
+        }
+
+        curr->next = head;
+        head->next = (head == temp) ? nullptr : temp;
+        curr = temp;
+    }
+
 public:
     void reorderList(ListNode* head) {
         if(!head || !head->next) return;
 
-        ListNode* curr = head;
-        ListNode* start = head;
-        ListNode* middle = getMiddle(curr);
-        ListNode* end = reverseList(middle->next);
-        middle->next = nullptr;
+        // ListNode* curr = head;
+        // ListNode* start = head;
+        // ListNode* middle = getMiddle(curr);
+        // ListNode* end = reverseList(middle->next);
+        // middle->next = nullptr;
 
-        while(end) {
-            ListNode* temp1 = start->next;
-            ListNode* temp2 = end->next;
+        // while(end) {
+        //     ListNode* temp1 = start->next;
+        //     ListNode* temp2 = end->next;
 
-            start->next = end;
-            end->next = temp1;
+        //     start->next = end;
+        //     end->next = temp1;
 
-            start = temp1;
-            end = temp2;
-        }
+        //     start = temp1;
+        //     end = temp2;
+        // }
+
+        curr = head;
+        reorderHelper(head);
     }
 };
