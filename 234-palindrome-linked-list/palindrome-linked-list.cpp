@@ -10,6 +10,9 @@
  */
 class Solution {
 private:
+    bool isListPalindrome = true;
+    ListNode* recCurr = nullptr;
+
     ListNode* reverseList(ListNode* head) {
         if(!head || !head->next) return head;
     
@@ -47,7 +50,6 @@ private:
         }
 
         int k = st.size() / 2;
-
         while(k--) {
             ListNode* top = st.top();
             st.pop();
@@ -60,6 +62,21 @@ private:
         }
 
         return true;
+    }
+
+    void checkPalindromeRecursion(ListNode* head) {
+        if(!head){
+            return;
+        }
+
+        checkPalindromeRecursion(head->next);
+
+        if(head->val != recCurr->val) {
+            isListPalindrome = false;
+            return;
+        }
+
+        recCurr = recCurr->next;
     }
 
 public:
@@ -81,6 +98,11 @@ public:
 
         // return true;
 
-        return checkPalindromeStack(head);
+        // return checkPalindromeStack(head);
+
+        recCurr = head;
+        checkPalindromeRecursion(head);
+
+        return isListPalindrome;
     }
 };
