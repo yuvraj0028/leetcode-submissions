@@ -15,15 +15,30 @@ public:
 */
 
 class Solution {
+private:
+    unordered_map<Node*, int> nodeToIndex;
+    unordered_map<int, Node*> indexToNode;
+
+    void mapRandomPointer(Node* &curr, Node* &currRes) {
+        if(curr->random) {
+            int randomNodeIndex = nodeToIndex[curr->random];
+
+            if(indexToNode.find(randomNodeIndex) != indexToNode.end()) {
+                currRes->random = indexToNode[randomNodeIndex];
+            } else {
+                Node* newRandomNode = new Node(curr->random->val);
+                indexToNode[randomNodeIndex] = newRandomNode;
+                currRes->random = newRandomNode;
+            } 
+        }
+    }
+
 public:
     Node* copyRandomList(Node* head) {
         if(!head) return nullptr;
 
         int index = 0;
         Node* curr = head;
-
-        unordered_map<Node*, int> nodeToIndex;
-        unordered_map<int, Node*> indexToNode;
 
         while(curr) {
             nodeToIndex[curr] = index;
@@ -42,36 +57,14 @@ public:
                 currRes->next = indexToNode[index];
                 currRes = currRes->next;
 
-                if(curr->random) {
-                    int randomNodeIndex = nodeToIndex[curr->random];
-                    cout<<curr->val<<" - "<<curr->random->val<<" - "<<randomNodeIndex<<endl;
-
-                    if(indexToNode.find(randomNodeIndex) != indexToNode.end()) {
-                        currRes->random = indexToNode[randomNodeIndex];
-                    } else {
-                        Node* newRandomNode = new Node(curr->random->val);
-                        indexToNode[randomNodeIndex] = newRandomNode;
-                        currRes->random = newRandomNode;
-                    } 
-                }
+                mapRandomPointer(curr, currRes);
             } else {
                 Node* newNode = new Node(curr->val);
                 currRes->next = newNode;
                 currRes = currRes->next;
                 indexToNode[index] = newNode;
 
-                if(curr->random) {
-                    int randomNodeIndex = nodeToIndex[curr->random];
-                    cout<<curr->val<<" - "<<curr->random->val<<" - "<<randomNodeIndex<<endl;
-
-                    if(indexToNode.find(randomNodeIndex) != indexToNode.end()) {
-                        currRes->random = indexToNode[randomNodeIndex];
-                    } else {
-                        Node* newRandomNode = new Node(curr->random->val);
-                        indexToNode[randomNodeIndex] = newRandomNode;
-                        currRes->random = newRandomNode;
-                    }
-                }
+                mapRandomPointer(curr, currRes);
             }
             index++;
             curr = curr->next;
