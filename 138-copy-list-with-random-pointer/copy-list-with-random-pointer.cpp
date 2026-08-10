@@ -53,6 +53,44 @@ private:
         return oldToNew[head];
     }
 
+
+    Node* deepCopyNoMap(Node* head) {
+        if(!head) return nullptr;
+
+        Node* curr = head;
+        while(curr) {
+            Node* nextNode = curr->next;
+            curr->next = new Node(curr->val);
+            curr->next->next = nextNode;
+            curr = nextNode;
+        }
+
+
+        curr = head;
+        while(curr) {
+            if(curr->random) {
+                curr->next->random = curr->random->next;
+            }
+            curr = curr->next->next;
+        }
+
+        Node* res = head->next;
+        curr = head;
+
+        while(curr) {
+            Node* nextNode = curr->next;
+            curr->next = nextNode->next;
+
+            if(nextNode->next) {
+                nextNode->next = nextNode->next->next;
+            }
+
+            curr = curr->next;
+        }
+
+        return res;
+    }
+
 public:
     Node* copyRandomList(Node* head) {
         // if(!head) return nullptr;
@@ -93,7 +131,8 @@ public:
         // return res->next;
 
 
-        return deepCopySingleMap(head);
+        // return deepCopySingleMap(head);
 
+        return deepCopyNoMap(head);
     }
 };
