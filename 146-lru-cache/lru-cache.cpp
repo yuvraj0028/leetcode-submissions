@@ -1,42 +1,45 @@
 class LRUCache {
 private:
-    list<int> dll;
-    unordered_map<int, pair<list<int> :: iterator, int > > mp;
-    int n;
+    unordered_map<int, pair<list<int>::iterator, int > > keyToNodeAddress;
+    list<int> nodes;
+    int size;
 
-    void markRecentlyUsed(int key){
-        dll.erase(mp[key].first);
-        dll.push_front(key);
-        mp[key].first = dll.begin();
+    void markRecentlyUsed(int key) {
+        nodes.erase(keyToNodeAddress[key].first);
+        nodes.push_front(key);
+        keyToNodeAddress[key].first = nodes.begin();
     }
 
 public:
     LRUCache(int capacity) {
-        this->n = capacity;
+        size = capacity;
     }
     
     int get(int key) {
-        if(mp.find(key) == mp.end()) return -1;
-        int val = mp[key].second;
+        if(keyToNodeAddress.find(key) == keyToNodeAddress.end()) {
+            return -1;
+        }
+
+        int val = keyToNodeAddress[key].second;
         markRecentlyUsed(key);
         return val;
     }
     
     void put(int key, int value) {
-        if(mp.find(key) != mp.end()){
-            mp[key].second = value;
+        if(keyToNodeAddress.find(key) != keyToNodeAddress.end()) {
+            keyToNodeAddress[key].second = value;
             markRecentlyUsed(key);
             return;
         } else {
-            dll.push_front(key);
-            mp[key] = {dll.begin(),value};
-            n--;
+            nodes.push_front(key);
+            keyToNodeAddress[key] = {nodes.begin(), value};
+            size--;
         }
 
-        if(n<0){
-            mp.erase(dll.back());
-            dll.pop_back();
-            n++;
+        if(size<0) {
+            keyToNodeAddress.erase(nodes.back());
+            nodes.pop_back();
+            size++;
         }
     }
 };
