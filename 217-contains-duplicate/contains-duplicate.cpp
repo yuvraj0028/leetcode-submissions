@@ -4,11 +4,11 @@ public:
         int n = nums.size();
         unordered_set<int> st;
         
-        for(int i = 0; i<n; i++) {
-            if(st.find(nums[i]) != st.end()){
+        for(const int &num: nums) {
+            if(st.count(num)){
                 return true;
             }
-            st.insert(nums[i]);
+            st.insert(num);
         }
 
         return false;
