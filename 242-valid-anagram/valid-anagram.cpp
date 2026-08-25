@@ -5,14 +5,14 @@ public:
 
         if(n!=m) return false;
 
-        vector<int> freq(256,0);
+        int freq[26] = {0};
 
         for(int i = 0; i<n; i++) {
-            freq[s[i]]++;
-            freq[t[i]]--;
+            freq[s[i]-'a']++;
+            freq[t[i]-'a']--;
         }
 
-        for(int i = 0; i<256; i++) {
+        for(int i = 0; i<26; i++) {
             if(freq[i]) return false;
         }
 
