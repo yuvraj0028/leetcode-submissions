@@ -6,11 +6,9 @@ public:
 
         for(int i = 0; i<n; i++) {
             int rem = target - nums[i];
-
             if(mp.find(nums[i]) != mp.end()) {
                 return {mp[nums[i]], i};
             }
-
             mp[rem] = i;
         }
 
