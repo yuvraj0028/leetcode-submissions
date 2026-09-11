@@ -1,15 +1,4 @@
 class Solution {
-private:
-    char convertLower(char &ch) {
-        if((ch>='a' && ch
-        
-        <='z') || (ch>='0' && ch<='9')) {
-            return ch;
-        }
-
-        return ch+32;
-    }
-
 public:
     bool isPalindrome(string s) {
         int start = 0;
@@ -20,7 +9,7 @@ public:
                 start++;
             } else if(!isalnum(s[end])) {
                 end--;
-            } else if(convertLower(s[start]) != convertLower(s[end])) {
+            } else if(tolower(s[start]) != tolower(s[end])) {
                 return false;
             } else {
                 start++;
