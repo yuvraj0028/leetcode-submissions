@@ -18,9 +18,19 @@ public:
     void set(string key, string value, int timestamp) {
         pair<string, int> newPair = {value, timestamp};
         store[key].push_back(newPair);
+        // store[key].insert(newPair);
     }
     
     string get(string key, int timestamp) {
+        // auto itr = store[key].lower_bound({"~", timestamp});
+
+        // if(itr != store[key].begin()) {
+        //     --itr;
+        //     return itr->first;
+        // }
+
+        // return "";
+
         if(store.find(key) == store.end()) return "";
 
         int s = 0;
