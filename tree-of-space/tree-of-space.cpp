@@ -85,6 +85,41 @@ bool upgradeLock(int index, int id) {
     return lock(index, id);
 }
 
+int getDepth(int index) {
+    int depth = 0;
+
+    while (index != -1) {
+        depth++;
+        index = treeNodes[index].parent;
+    }
+
+    return depth;
+}
+
+int LCA(int u, int v) {
+    int depthU = getDepth(u);
+    int depthV = getDepth(v);
+
+    // Bring both nodes to the same depth.
+    while (depthU > depthV) {
+        u = treeNodes[u].parent;
+        depthU--;
+    }
+
+    while (depthV > depthU) {
+        v = treeNodes[v].parent;
+        depthV--;
+    }
+
+    // Move both upward until they meet.
+    while (u != v) {
+        u = treeNodes[u].parent;
+        v = treeNodes[v].parent;
+    }
+
+    return u;
+}
+
 void handleActions() {
     // n -> no of nodes, m->each nodes how many children, q -> no of queries
     int n, m, q;
