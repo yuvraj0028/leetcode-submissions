@@ -10,7 +10,7 @@ public:
     unordered_set<int> descendends;
 
     mutable mutex descendendsLock;
-    mutable shared_mutex nodeLock;
+    mutable mutex nodeLock;
 };
 
 class Tree {
@@ -62,55 +62,87 @@ public:
     }
 
     bool lockNode(int index, int uid) {
-        const vector<int> ancestors = getAncestors(index);
-        vector<shared_lock<shared_mutex>> ancestorsSharedLocks;
-        ancestorsSharedLocks.reserve(ancestors.size());
+        int maxRetries = 100;
 
-        // acquiring shared locks on ancestors
-        for(const auto &anc : ancestors) {
-            ancestorsSharedLocks.emplace_back(nodes[anc]->nodeLock);
-        }
+        for(int i = 0; i<maxRetries; i++) {
+            bool retry = false;
+            const vector<int> ancestors = getAncestors(index);
+            vector<unique_lock<mutex > > ancestorsLocks;
+            ancestorsLocks.reserve(ancestors.size());
+    
+            // acquiring locks on ancestors
+            for(const auto &anc : ancestors) {
+                unique_lock<mutex> lk(nodes[anc]->nodeLock, try_to_lock);
 
-        // acquiring exclusive lock on current node
-        unique_lock<shared_mutex> targetLock(
-            nodes[index]->nodeLock
-        );
+                if(!lk.owns_lock()){
+                    retry = true;
+                    break;
+                }
 
-        // if node index is already locked return false
-        if(nodes[index]->locked) return false;
+                ancestorsLocks.push_back(move(lk));
+            }
+    
+            if(retry) {
+                ancestorsLocks.clear();
+                this_thread::yield();
+                continue;
+            }
 
-        // check if all the descendends are lock free, which means the set is empty
-        {
-            lock_guard<mutex> descendendsLock(
-                nodes[index]->descendendsLock
+            // acquiring exclusive lock on current node
+            unique_lock<mutex> targetLock(
+                nodes[index]->nodeLock, try_to_lock
             );
-            
-            if(!nodes[index]->descendends.empty()) return false;
 
+            if(!targetLock.owns_lock()){
+                ancestorsLocks.clear();
+                this_thread::yield();
+                continue;
+            }
+    
+            // if node index is already locked return false
+            if(nodes[index]->locked) return false;
+
+
+            // check if parents are locked?
+            for(const int &anc : ancestors) {
+                if(nodes[anc]->locked) return false;
+            }
+    
+            // check if all the descendends are lock free, which means the set is empty
+            {
+                lock_guard<mutex> descendendsLock(
+                    nodes[index]->descendendsLock
+                );
+                
+                if(!nodes[index]->descendends.empty()) return false;
+    
+            }
+    
+            // lock the current node
+            nodes[index]->locked = 1;
+            nodes[index]->lockedBy = uid;
+    
+            // update the ancestors descendends
+            updateAncestorsDescendends(index, true);
+    
+            return true;
         }
 
-        // lock the current node
-        nodes[index]->locked = 1;
-        nodes[index]->lockedBy = uid;
-
-        // update the ancestors descendends
-        updateAncestorsDescendends(index, true);
-
-        return true;
+        return false;
     }
 
     bool unlockNode(int index, int uid) {
         const vector<int> ancestors = getAncestors(index);
-        vector<shared_lock<shared_mutex>> ancestorsSharedLocks;
-        ancestorsSharedLocks.reserve(ancestors.size());
+        vector<unique_lock<mutex>> ancestorsLocks;
+        ancestorsLocks.reserve(ancestors.size());
 
-        // acquiring shared locks on ancestors
+        // acquiring locks on ancestors
         for(const auto &anc : ancestors) {
-            ancestorsSharedLocks.emplace_back(nodes[anc]->nodeLock);
+            ancestorsLocks.emplace_back(nodes[anc]->nodeLock);
         }
 
         // acquiring exclusive lock on current node
-        unique_lock<shared_mutex> targetLock(
+        unique_lock<mutex> targetLock(
             nodes[index]->nodeLock
         );
 
@@ -131,16 +163,16 @@ public:
 
     bool upgradeNode(int index, int uid) {
         const vector<int> ancestors = getAncestors(index);
-        vector<shared_lock<shared_mutex>> ancestorsSharedLocks;
-        ancestorsSharedLocks.reserve(ancestors.size());
+        vector<unique_lock<mutex>> ancestorsLocks;
+        ancestorsLocks.reserve(ancestors.size());
 
-        // acquiring shared locks on ancestors
+        // acquiring locks on ancestors
         for(const auto &anc : ancestors) {
-            ancestorsSharedLocks.emplace_back(nodes[anc]->nodeLock);
+            ancestorsLocks.emplace_back(nodes[anc]->nodeLock);
         }
 
         // acquiring exclusive lock on current node
-        unique_lock<shared_mutex> targetLock(
+        unique_lock<mutex> targetLock(
             nodes[index]->nodeLock
         );
 
@@ -155,7 +187,7 @@ public:
 
         // exclusive lock on desc for ownership check
         sort(descendants.begin(), descendants.end());
-        vector<unique_lock<shared_mutex>> descendantLocks;
+        vector<unique_lock<mutex>> descendantLocks;
         for(const auto &i : descendants) {
             descendantLocks.emplace_back(nodes[i]->nodeLock);
         }
